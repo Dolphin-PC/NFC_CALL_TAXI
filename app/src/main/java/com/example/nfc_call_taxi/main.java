@@ -103,25 +103,21 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
         mapFragment.getMapAsync(this);
         init();
         click();
-
     }
     @Override
     protected void onPause() {
-        if(nfcAdapter != null){
-            nfcAdapter.disableForegroundDispatch(this);
-        }
         super.onPause();
     }
     @Override
     protected void onResume() {
         super.onResume();
-        if(nfcAdapter != null){
-            nfcAdapter.enableForegroundDispatch(this,pendingIntent,null,null);
+        Intent intent = getIntent();
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+            updateGPS(intent);
         }
     }
-    @Override
-    protected void onNewIntent(Intent intent) { //테그데이터를 전달받았을때 태그정보를 화면에 보여줌.
-        super.onNewIntent(intent);
+    private void updateGPS(Intent intent)
+    {
         String s = ""; // 글씨를 띄우는데 사용
         Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES); // EXTRA_NDEF_MESSAGES : 여분의 배열이 태그에 존재한다.
         if(data != null)
@@ -147,6 +143,11 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
         Longitude = s.split(":")[1].split(",")[1];
         Log.e("gps",Latitude+"," + Longitude);
         moveMap(Double.valueOf(Latitude),Double.valueOf(Longitude));
+    }
+    @Override
+    protected void onNewIntent(Intent intent) { //테그데이터를 전달받았을때 태그정보를 화면에 보여줌.
+        super.onNewIntent(intent);
+        updateGPS(intent);
     }
 
     @Override
@@ -183,12 +184,15 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
         map = googleMap;
         map.setOnCameraMoveListener(this);
         map.setOnCameraIdleListener(this);
-        moveMap(37.566643, 126.978279);
+        if(Latitude != null&&Longitude!=null)
+            moveMap(Double.valueOf(Latitude), Double.valueOf(Longitude));
     }
     void moveMap(Double Latitude,Double Longitude){
         LatLng gpsLatLng = new LatLng(Latitude, Longitude);
         CameraPosition position = new CameraPosition.Builder().target(gpsLatLng).zoom(15).build();
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(position));
-        map.addMarker(new MarkerOptions().position(gpsLatLng).title("출발 위치"));
+        if(map != null) {
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(position));
+            map.addMarker(new MarkerOptions().position(gpsLatLng).title("출발 위치"));
+        }
     }
 }
