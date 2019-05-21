@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">NFC_Call_Taxi</string>
+    <string name="nfc_data"></string>
+</resources>

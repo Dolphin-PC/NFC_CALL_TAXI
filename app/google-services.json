@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "331532954437",
+    "firebase_url": "https://nfccalltaxi.firebaseio.com",
+    "project_id": "nfccalltaxi",
+    "storage_bucket": "nfccalltaxi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331532954437:android:395bb06dc8bcd3f9",
+        "android_client_info": {
+          "package_name": "com.example.nfc_call_taxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331532954437-cgsjhr0va717qqojrapn78cfijip854b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.nfc_call_taxi",
+            "certificate_hash": "85169f029c3396cb29cc076084d07cb19faa4802"
+          }
+        },
+        {
+          "client_id": "331532954437-k53p0tggi9ohtgga8h34v0m4a7rg11k7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeHPrFzqU6uXUqMwgmFfq1_yyYdDryFvA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331532954437-k53p0tggi9ohtgga8h34v0m4a7rg11k7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
