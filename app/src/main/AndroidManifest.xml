@@ -3,8 +3,7 @@
     package="com.example.nfc_call_taxi">
 
     <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="26"/>
+        android:targetSdkVersion="28"/>
 
     <uses-feature android:name="@android:hardware:nfc" android:required="false" />
     <uses-permission android:name="android.permission.NFC"/>
@@ -16,6 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="adjustPan" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,5 +37,4 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
     </application>
-
 </manifest>

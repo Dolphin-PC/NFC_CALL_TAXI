@@ -57,25 +57,8 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
         setContentView(R.layout.activity_main);
         init();
         click();
-
     }
-    @Override
-    protected void onPause() {
-        if(nfcAdapter != null){
-            nfcAdapter.disableForegroundDispatch(this);
-        }
-        super.onPause();
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(nfcAdapter != null){
-            nfcAdapter.enableForegroundDispatch(this,pendingIntent,null,null);
-        }
-    }
-    @Override
-    protected void onNewIntent(Intent intent) { //테그데이터를 전달받았을때 태그정보를 화면에 보여줌.
-        super.onNewIntent(intent);
+    private void handleIntents(Intent intent) {
         String s = ""; // 글씨를 띄우는데 사용
         Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES); // EXTRA_NDEF_MESSAGES : 여분의 배열이 태그에 존재한다.
         if(data != null)
@@ -85,7 +68,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
                     NdefRecord[] recs = ((NdefMessage)data[i]).getRecords();
                     for(j = 0; j<recs.length; j++)
                     {
-                        if(recs[j].getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(recs[j].getType(), NdefRecord.RTD_TEXT)){
+                        if(recs[j].getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(recs[j].getType(), NdefRecord.RTD_URI)){
                             byte[] payload = recs[j].getPayload();
                             String textEncoding = ((payload[0] & 0200)==0)?"UTF-8":"UTF-16";
                             int langCodeLen = payload[0] & 0077;
@@ -97,6 +80,28 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
             catch(Exception e) { }
         }
         TESTtext.setText(s);
+    }
+    @Override
+    protected void onPause() {
+        if(nfcAdapter != null){
+            nfcAdapter.disableForegroundDispatch(this);
+        }
+        super.onPause();
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(nfcAdapter != null){
+            nfcAdapter.enableForegroundDispatch(this,pendingIntent,null,null);
+
+        }
+    }
+    @Override
+    protected void onNewIntent(Intent intent) { //테그데이터를 전달받았을때 태그정보를 화면에 보여줌.
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIntents(intent);
     }
 
     @Override
