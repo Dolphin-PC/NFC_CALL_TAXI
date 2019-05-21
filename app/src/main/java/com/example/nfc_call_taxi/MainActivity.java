@@ -9,6 +9,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.NfcA;
+import android.nfc.tech.NfcB;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -76,7 +77,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
     protected void onNewIntent(Intent intent) { //테그데이터를 전달받았을때 태그정보를 화면에 보여줌.
         super.onNewIntent(intent);
         String s = ""; // 글씨를 띄우는데 사용
-        Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_DATA); // EXTRA_NDEF_MESSAGES : 여분의 배열이 태그에 존재한다.
+        Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES); // EXTRA_NDEF_MESSAGES : 여분의 배열이 태그에 존재한다.
         if(data != null)
         {
             try{
@@ -96,8 +97,6 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
             catch(Exception e) { }
         }
         TESTtext.setText(s);
-        Latitude = s.split(",")[0];
-        Longitude = s.split(",")[1];
     }
 
     @Override
