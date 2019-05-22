@@ -2,7 +2,9 @@ package com.example.nfc_call_taxi;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -39,8 +41,12 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -52,6 +58,8 @@ import java.util.HashMap;
 public class main extends Activity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnCameraIdleListener,GoogleMap.OnCameraMoveListener{
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
+    private IntentFilter[] intentFilter;
+    private String[][] NFCTechLists;
     EditText NAMEedit,PHONENUMBERedit;
     Button CALLbutton;
     String Latitude,Longitude;
@@ -60,12 +68,14 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
     GoogleMap map;
     GoogleApiClient googleApiClient;
     DatabaseReference mDatabase;
+    Query query;
 
     long now = System.currentTimeMillis ();
     Date date = new Date(now);
     SimpleDateFormat sdfNow = new SimpleDateFormat("HH:mm");
     String Time = sdfNow.format(date);
 
+    AlertDialog.Builder dialog;
     void init(){
         NAMEedit = findViewById(R.id.NAMEedit);
         PHONENUMBERedit = findViewById(R.id.PHONENUMBERedit);
@@ -73,7 +83,9 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
         TESTtext = findViewById(R.id.TESTtext);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         Intent intent = new Intent(this,getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        pendingIntent = PendingIntent.getActivity(this,0,intent,0);
+        pendingIntent = PendingIntent.getActivity(this,0,
+                intent,0);
+
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -90,6 +102,8 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
                 else{
                     Data_call data_call = new Data_call(NAMEedit.getText().toString(),PHONENUMBERedit.getText().toString(),Time,Latitude,Longitude,"","","");
                     mDatabase.child("call").push().setValue(data_call);
+
+                    Toast.makeText(getApplicationContext(),"택시를 호출했습니다.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -103,6 +117,22 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
         mapFragment.getMapAsync(this);
         init();
         click();
+
+        query = mDatabase.child("call").orderByChild("phonenumber").equalTo(PHONENUMBERedit.getText().toString());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Data_call data_call = snapshot.getValue(Data_call.class);
+                    if(data_call.getTaxi_number().equals("") || data_call.getTaxi_phonenumber().equals("")){
+                        DIALOG(data_call.getTaxi_number(),data_call.getTaxi_phonenumber());
+                        dialog.show();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     }
     @Override
     protected void onPause() {
@@ -111,10 +141,8 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent = getIntent();
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-            updateGPS(intent);
-        }
+        if(nfcAdapter != null)
+            nfcAdapter.enableForegroundDispatch(this,pendingIntent,null,null);
     }
     private void updateGPS(Intent intent)
     {
@@ -184,15 +212,24 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
         map = googleMap;
         map.setOnCameraMoveListener(this);
         map.setOnCameraIdleListener(this);
-        if(Latitude != null&&Longitude!=null)
-            moveMap(Double.valueOf(Latitude), Double.valueOf(Longitude));
+        moveMap(37.566643, 126.978279);
     }
     void moveMap(Double Latitude,Double Longitude){
         LatLng gpsLatLng = new LatLng(Latitude, Longitude);
         CameraPosition position = new CameraPosition.Builder().target(gpsLatLng).zoom(15).build();
-        if(map != null) {
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(position));
-            map.addMarker(new MarkerOptions().position(gpsLatLng).title("출발 위치"));
-        }
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(position));
+        map.addMarker(new MarkerOptions().position(gpsLatLng).title("출발 위치"));
+    }
+    void DIALOG(String TaxiNumber,String TaxiPhonenumber) {
+        dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("택시 호출")
+                .setMessage("택시가 호출되었습니다." +
+                        "\n택시번호 : " + TaxiNumber +
+                        "\n전화번호 : " + TaxiPhonenumber)
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
     }
 }
