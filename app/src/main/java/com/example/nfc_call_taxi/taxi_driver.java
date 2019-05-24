@@ -3,8 +3,10 @@ package com.example.nfc_call_taxi;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -142,6 +144,11 @@ public class taxi_driver extends AppCompatActivity implements OnMapReadyCallback
 
                     }
                 });
+                String url = "daummaps://route?sp=";
+                url += gpsLatLng.latitude + "," + gpsLatLng.longitude;
+                url += "&ep=" + CallLatLng.latitude + "," + CallLatLng.longitude + "&by=CAR";
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
                 //TODO : gpsLatLng 와 CallLatLng 로 카카오맵 지도 켜주기
             }
         });

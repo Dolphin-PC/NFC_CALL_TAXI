@@ -119,14 +119,14 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
         init();
         click();
 
-        query = mDatabase.child("call").orderByChild("phonenumber").equalTo(PhoneNumber);
+        query = mDatabase.child("call");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Data_call data_call = snapshot.getValue(Data_call.class);
-                    if(!data_call.getTaxi_number().equals("") && !data_call.getTaxi_phonenumber().equals("")){
-                        DIALOG(data_call.getTaxi_number(),data_call.getTaxi_phonenumber()); //TODO : 다이얼로그 문제 해결해야됨.
+                    if(data_call.getPhonenumber().equals(PhoneNumber) && !data_call.getTaxi_number().equals("")){
+                        DIALOG(data_call.getTaxi_number(),data_call.getTaxi_phonenumber());
                         dialog.show();
                     }
                 }
