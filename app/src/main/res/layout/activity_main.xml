@@ -64,7 +64,7 @@
         android:layout_marginEnd="176dp"
         android:layout_marginRight="176dp"
         android:layout_marginBottom="52dp"
-        android:text="TextView"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

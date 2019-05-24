@@ -97,11 +97,14 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
         CALLbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(NAMEedit.getText().toString().equals("") || PHONENUMBERedit.getText().toString().equals(""))
+                if(TESTtext.getText().toString().equals(""))
+                    Toast.makeText(getApplicationContext(),"NFC를 한번 더 태그해주세요.",Toast.LENGTH_SHORT).show();
+                else if(NAMEedit.getText().toString().equals("") || PHONENUMBERedit.getText().toString().equals("")){
                     Toast.makeText(getApplicationContext(),"정보를 모두 입력해주세요.",Toast.LENGTH_SHORT).show();
+                }
                 else{
                     PhoneNumber = PHONENUMBERedit.getText().toString();
-                    Data_call data_call = new Data_call(NAMEedit.getText().toString(),PHONENUMBERedit.getText().toString(),Time,Latitude,Longitude,"","","");
+                    Data_call data_call = new Data_call(NAMEedit.getText().toString(),PHONENUMBERedit.getText().toString(),Time,Latitude,Longitude,"","","","","");
                     mDatabase.child("call").push().setValue(data_call);
 
                     Toast.makeText(getApplicationContext(),"택시를 호출했습니다.",Toast.LENGTH_SHORT).show();
@@ -227,10 +230,31 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
                 .setMessage("택시가 호출되었습니다." +
                         "\n택시번호 : " + TaxiNumber +
                         "\n전화번호 : " + TaxiPhonenumber)
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                .setPositiveButton("택시위치 보기", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        query = mDatabase.child("call");
+                        query.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                    Data_call data_call = snapshot.getValue(Data_call.class);
+                                    if(data_call.getPhonenumber().equals(PhoneNumber) && !data_call.getTaxi_number().equals("")){
+                                        map.clear();
+                                        moveMap(Double.valueOf(data_call.getTaxi_latitude()),Double.valueOf(data_call.getLongitude()));
+                                    }
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) { }
+                        });
                     }
-                });
+                })
+        .setNegativeButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
     }
 }

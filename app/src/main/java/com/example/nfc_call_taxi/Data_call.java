@@ -3,9 +3,9 @@ package com.example.nfc_call_taxi;
 public class Data_call {
 
     private String name,phonenumber,time,Latitude,Longitude;
-    private String taxi_name,taxi_phonenumber,taxi_number;
+    private String taxi_name,taxi_phonenumber,taxi_number,taxi_latitude,taxi_longitude;
     Data_call(){}
-    Data_call(String name,String phonenumber,String time,String Latitude,String Longitude,String taxi_name,String taxi_phonenumber,String taxi_number){
+    Data_call(String name,String phonenumber,String time,String Latitude,String Longitude,String taxi_name,String taxi_phonenumber,String taxi_number,String taxi_latitude,String taxi_longitude){
         this.name=name;
         this.phonenumber=phonenumber;
         this.time = time;
@@ -14,6 +14,9 @@ public class Data_call {
         this.taxi_name=taxi_name;
         this.taxi_phonenumber=taxi_phonenumber;
         this.taxi_number=taxi_number;
+        this.taxi_latitude=taxi_latitude;
+        this.taxi_longitude=taxi_longitude;
+
     }
 
     public String getLongitude() {
@@ -48,6 +51,14 @@ public class Data_call {
         return time;
     }
 
+    public String getTaxi_latitude() {
+        return taxi_latitude;
+    }
+
+    public String getTaxi_longitude() {
+        return taxi_longitude;
+    }
+
     public void setLongitude(String longitude) {
         Longitude = longitude;
     }
@@ -78,5 +89,13 @@ public class Data_call {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public void setTaxi_latitude(String taxi_latitude) {
+        this.taxi_latitude = taxi_latitude;
+    }
+
+    public void setTaxi_longitude(String taxi_longitude) {
+        this.taxi_longitude = taxi_longitude;
     }
 }

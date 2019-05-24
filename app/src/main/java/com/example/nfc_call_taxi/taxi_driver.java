@@ -126,6 +126,8 @@ public class taxi_driver extends AppCompatActivity implements OnMapReadyCallback
                             Hash1.put("taxi_name","박찬영");
                             Hash1.put("taxi_phonenumber","010-4744-3358");
                             Hash1.put("taxi_number","춘천 가 1234");
+                            Hash1.put("taxi_latitude",gpsLatLng.latitude+"");
+                            Hash1.put("taxi_longitude",gpsLatLng.longitude+"");
 
                             /*Hash1.put(PhonenumberText.getText().toString(),new Data_call(data_call.getName()
                                     ,data_call.getPhonenumber()
@@ -149,6 +151,7 @@ public class taxi_driver extends AppCompatActivity implements OnMapReadyCallback
                 url += "&ep=" + CallLatLng.latitude + "," + CallLatLng.longitude + "&by=CAR";
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
+                InVisible();
                 //TODO : gpsLatLng 와 CallLatLng 로 카카오맵 지도 켜주기
             }
         });
@@ -194,6 +197,7 @@ public class taxi_driver extends AppCompatActivity implements OnMapReadyCallback
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         /*
         Log.e("gps.lati",gpsLatLng.latitude+"");
         Log.e("gps.lati",gpsLatLng.longitude+"");*/
@@ -209,7 +213,7 @@ public class taxi_driver extends AppCompatActivity implements OnMapReadyCallback
                     NameText.setText(data_call.getName());
                     PhonenumberText.setText(data_call.getPhonenumber());
                     moveMap(CallLatLng);
-                    map.addMarker(new MarkerOptions().position(new LatLng(CallLatLng.latitude, CallLatLng.longitude)).title("출발 위치")
+                    map.addMarker(new MarkerOptions().position(new LatLng(CallLatLng.latitude, CallLatLng.longitude)).title("콜 위치")
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                 }
             }
@@ -312,8 +316,10 @@ public class taxi_driver extends AppCompatActivity implements OnMapReadyCallback
         map = googleMap;
         map.setOnCameraMoveListener(this);
         map.setOnCameraIdleListener(this);
+
         if (mLocationPermissionGranted){
             My_Location();
+
         }
         else
             setmDefaultLocation();
@@ -330,6 +336,7 @@ public class taxi_driver extends AppCompatActivity implements OnMapReadyCallback
                     map.moveCamera(CameraUpdateFactory.newCameraPosition(position));
                     map.setMyLocationEnabled(mLocationPermissionGranted);
                     gpsLatLng = MyLocation;
+                    DrawCirlce(1000);
                 }
             });
 
