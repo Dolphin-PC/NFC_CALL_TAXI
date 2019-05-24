@@ -142,7 +142,7 @@ public class taxi_driver extends AppCompatActivity implements OnMapReadyCallback
 
                     }
                 });
-                //gpsLatLng 와 CallLatLng 로 카카오맵 지도 켜주기
+                //TODO : gpsLatLng 와 CallLatLng 로 카카오맵 지도 켜주기
             }
         });
         CancelButton.setOnClickListener(new View.OnClickListener() {

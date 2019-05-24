@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.nfc_call_taxi">
 
-    <uses-sdk android:minSdkVersion="10"/>
     <uses-feature
         android:name="@android:hardware:nfc"
         android:required="true" />

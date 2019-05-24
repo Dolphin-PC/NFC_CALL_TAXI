@@ -62,7 +62,7 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
     private String[][] NFCTechLists;
     EditText NAMEedit,PHONENUMBERedit;
     Button CALLbutton;
-    String Latitude,Longitude;
+    String Latitude,Longitude,PhoneNumber;
     TextView TESTtext;
     int j;
     GoogleMap map;
@@ -100,6 +100,7 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
                 if(NAMEedit.getText().toString().equals("") || PHONENUMBERedit.getText().toString().equals(""))
                     Toast.makeText(getApplicationContext(),"정보를 모두 입력해주세요.",Toast.LENGTH_SHORT).show();
                 else{
+                    PhoneNumber = PHONENUMBERedit.getText().toString();
                     Data_call data_call = new Data_call(NAMEedit.getText().toString(),PHONENUMBERedit.getText().toString(),Time,Latitude,Longitude,"","","");
                     mDatabase.child("call").push().setValue(data_call);
 
@@ -118,14 +119,14 @@ public class main extends Activity implements OnMapReadyCallback, GoogleApiClien
         init();
         click();
 
-        query = mDatabase.child("call").orderByChild("phonenumber").equalTo(PHONENUMBERedit.getText().toString());
+        query = mDatabase.child("call").orderByChild("phonenumber").equalTo(PhoneNumber);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Data_call data_call = snapshot.getValue(Data_call.class);
-                    if(data_call.getTaxi_number().equals("") || data_call.getTaxi_phonenumber().equals("")){
-                        DIALOG(data_call.getTaxi_number(),data_call.getTaxi_phonenumber());
+                    if(!data_call.getTaxi_number().equals("") && !data_call.getTaxi_phonenumber().equals("")){
+                        DIALOG(data_call.getTaxi_number(),data_call.getTaxi_phonenumber()); //TODO : 다이얼로그 문제 해결해야됨.
                         dialog.show();
                     }
                 }
